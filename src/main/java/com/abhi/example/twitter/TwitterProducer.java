@@ -32,7 +32,7 @@ public class TwitterProducer {
             token = "1232007140769816577-Uyk6s0m0nt4O87An4RBfCHaQqJ2aSv",
             tokenSecret = "V0SIcmRK9U6b3ZCYl5IaQCNYcvAr61mRGHsxXjUmi1xsC";
 
-    List<String> terms = Lists.newArrayList("kafka");
+    List<String> terms = Lists.newArrayList("kafka" , "bitcoin", "India", "Donald Trump");
 
 
     public TwitterProducer(){}
@@ -116,6 +116,17 @@ public class TwitterProducer {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // For safe producer
+        properties.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+        properties.setProperty(ProducerConfig.RETRIES_CONFIG, String.valueOf(10));
+        properties.setProperty(ProducerConfig.ACKS_CONFIG, "all");
+        properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, String.valueOf(5));
+
+        //high throughput settings
+        properties.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+        properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
+        properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32*1024));
 
         // producer
         KafkaProducer <String, String> producer = new KafkaProducer<String, String>(properties);
