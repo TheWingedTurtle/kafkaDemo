@@ -1,32 +1,36 @@
-package com.abhi.example.org;
+package example.org;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-public class ConsumerDemoWithThreads {
+public class ConsumerDemoAssignAndSeek {
 
 
     public static void main(String[] args) {
-        new  ConsumerDemoWithThreads().run();
+        new ConsumerDemoAssignAndSeek().run();
     }
     private void run(){
-        Logger logger = LoggerFactory.getLogger(ConsumerDemoWithThreads.class.getName());
+        Logger logger = LoggerFactory.getLogger(ConsumerDemoAssignAndSeek.class.getName());
         String bootStrapServer = "localhost:9092";
-        String groupId = "fifth_application";
+        //DOnt want group id or consumer groups
+        //String groupId = "sixth_application";
         String topic = "first_topic";
         CountDownLatch latch = new CountDownLatch(1);
 
-        Runnable consumerRunner = new ConsumerRunner(bootStrapServer, groupId, topic, latch);
+        Runnable consumerRunner = new ConsumerRunner(bootStrapServer, topic, latch);
+
 
         Thread consumerThread = new Thread(consumerRunner);
         consumerThread.start();
@@ -58,16 +62,23 @@ public class ConsumerDemoWithThreads {
         private Logger logger = LoggerFactory.getLogger(ConsumerRunner.class.getName());
         private CountDownLatch latch;
         private KafkaConsumer<String, String> consumer;
-        public ConsumerRunner( String bootStrapServer, String groupId, String topic, CountDownLatch latch){
+        public ConsumerRunner( String bootStrapServer, String topic, CountDownLatch latch){
             this.latch = latch;
             Properties properties = new Properties();
             properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
             properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
             properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServer);
-            properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
             properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
             consumer = new KafkaConsumer<String, String>(properties);
             consumer.subscribe(Collections.singleton(topic));
+
+            //assign
+            TopicPartition partitionToReadFrom = new TopicPartition(topic, 0);
+            consumer.assign(Arrays.asList(partitionToReadFrom));
+
+
+            long offsetToReadFrom = 15L;
+            consumer.seek(partitionToReadFrom, offsetToReadFrom);
         }
 
         @Override
@@ -88,6 +99,9 @@ public class ConsumerDemoWithThreads {
                 latch.countDown();
             }
         }
+
+        //Assign and seek is used to fetch specific data
+
 
         public void shutdown(){
             consumer.wakeup();

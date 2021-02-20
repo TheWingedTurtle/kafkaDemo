@@ -1,0 +1,3 @@
+Two types of threds:
+    Daemon: runs in the background.
+    Non Daemon: runs in the foreground.

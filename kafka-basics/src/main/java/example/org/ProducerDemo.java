@@ -1,4 +1,4 @@
-package com.abhi.example.org;
+package example.org;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;

@@ -1,4 +1,4 @@
-package com.abhi.example.org;
+package example.org;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

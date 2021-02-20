@@ -1,4 +1,4 @@
-package com.abhi.example.twitter;
+package example.twitter.producer;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
@@ -74,6 +74,7 @@ public class TwitterProducer {
 //                logger.info(msg);
             }
         }
+
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Shutting down application");

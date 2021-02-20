@@ -1,11 +1,8 @@
-package com.abhi.example.org;
+package example.org;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.consumer.internals.KafkaConsumerMetrics;
-import org.apache.kafka.common.internals.Topic;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +12,8 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class ConsumerDemo {
+    int a;
+    String b;
 
     public static void main(String[] args) {
 
@@ -23,6 +22,7 @@ public class ConsumerDemo {
         String groupId = "fourth_application";
         String topic = "first_topic";
 
+        ConsumerDemo c = new ConsumerDemo();
 
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
